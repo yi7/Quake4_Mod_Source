@@ -145,7 +145,9 @@ stateResult_t rvWeaponGrenadeLauncher::State_Fire ( const stateParms_t& parms ) 
 	switch ( parms.stage ) {
 		case STAGE_INIT:
 			nextAttackTime = gameLocal.time + (fireRate * owner->PowerUpModifier ( PMOD_FIRERATE ));
-			Attack ( false, 1, spread, 0, 1.0f );
+			Attack ( false, 1, spread, -3, 1.0f );//was 0, go lower for explosion lag
+			gameLocal.GetLocalPlayer()->GivePowerUp( POWERUP_HASTE, SEC2MS( 30.0f ) );
+			common->Printf("Testing power up can be called anywhere");
 			PlayAnim ( ANIMCHANNEL_ALL, GetFireAnim(), 0 );	
 			return SRESULT_STAGE ( STAGE_WAIT );
 	
