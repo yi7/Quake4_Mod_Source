@@ -317,7 +317,7 @@ void idItem::Think( void ) {
 		RunPhysics();		
 		UpdateTrigger();
 	}
-
+	
 	if ( gameLocal.IsMultiplayer() && g_skipItemShadowsMP.GetBool() ) {
 		renderEntity.suppressShadowInViewID = gameLocal.localClientNum + 1;
 	} else {
@@ -636,13 +636,27 @@ bool idItem::Pickup( idPlayer *player ) {
 	//dropped weapon?
 	bool dropped = spawnArgs.GetBool( "dropped" );
 
+	common->Printf("Testing powerup on item pickup\n");
+	int randomPowerup = rand() % 3 + 1;
+	if ( gameLocal.GetLocalPlayer()->PowerUpActive( POWERUP_QUADDAMAGE ) || 
+		 gameLocal.GetLocalPlayer()->PowerUpActive( POWERUP_HASTE ) || 
+		 gameLocal.GetLocalPlayer()->PowerUpActive( POWERUP_INVISIBILITY ) ) {
+			 //Do nothing, carry on...
+	} else {
+		if( randomPowerup == 1 )
+			gameLocal.GetLocalPlayer()->GivePowerUp( POWERUP_QUADDAMAGE, SEC2MS( 30.0f ) );
+		else if( randomPowerup == 2 )
+			gameLocal.GetLocalPlayer()->GivePowerUp( POWERUP_HASTE, SEC2MS( 30.0f ) );
+		else if( randomPowerup == 3 )
+			gameLocal.GetLocalPlayer()->GivePowerUp( POWERUP_INVISIBILITY, SEC2MS( 30.0f ) );
+	}
+
 	if ( gameLocal.isMultiplayer && !dropped && spawnArgs.FindKey( "weaponclass" ) 
 		&& gameLocal.IsWeaponsStayOn() && gameLocal.time > player->lastPickupTime + 1000 ) {
 		
 		idDict attr;
 		GetAttributes( attr );
 		const idKeyValue* arg = attr.FindKey( "weapon" );
-
 		if ( arg ) {
 			if ( !player->inventory.Give( player, player->spawnArgs, arg->GetKey(), arg->GetValue(), NULL, false, dropped, true ) ) {
 				StartSound( "snd_noacquire", SND_CHANNEL_ITEM, 0, false, NULL );
