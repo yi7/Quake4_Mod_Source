@@ -636,19 +636,24 @@ bool idItem::Pickup( idPlayer *player ) {
 	//dropped weapon?
 	bool dropped = spawnArgs.GetBool( "dropped" );
 
-	common->Printf("Testing powerup on item pickup\n");
+	const idDeclEntityDef*	def;
+
 	int randomPowerup = rand() % 3 + 1;
 	if ( gameLocal.GetLocalPlayer()->PowerUpActive( POWERUP_QUADDAMAGE ) || 
 		 gameLocal.GetLocalPlayer()->PowerUpActive( POWERUP_HASTE ) || 
 		 gameLocal.GetLocalPlayer()->PowerUpActive( POWERUP_INVISIBILITY ) ) {
 			 //Do nothing, carry on...
 	} else {
-		if( randomPowerup == 1 )
+		if( randomPowerup == 1 ) {
 			gameLocal.GetLocalPlayer()->GivePowerUp( POWERUP_QUADDAMAGE, SEC2MS( 30.0f ) );
-		else if( randomPowerup == 2 )
+			common->Printf("Regen powerup\n");
+		} else if( randomPowerup == 2 ) {
 			gameLocal.GetLocalPlayer()->GivePowerUp( POWERUP_HASTE, SEC2MS( 30.0f ) );
-		else if( randomPowerup == 3 )
+			common->Printf("Haste powerup\n");
+		} else if( randomPowerup == 3 ) {
 			gameLocal.GetLocalPlayer()->GivePowerUp( POWERUP_INVISIBILITY, SEC2MS( 30.0f ) );
+			common->Printf("Invis powerup\n");
+		}
 	}
 
 	if ( gameLocal.isMultiplayer && !dropped && spawnArgs.FindKey( "weaponclass" ) 

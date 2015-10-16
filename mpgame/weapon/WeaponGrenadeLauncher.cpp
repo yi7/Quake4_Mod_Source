@@ -29,6 +29,11 @@ private:
 	const char*			GetIdleAnim() const { return (!AmmoInClip()) ? "idle_empty" : "idle"; }
 	
 	CLASS_STATES_PROTOTYPE ( rvWeaponGrenadeLauncher );
+
+public:
+	int bombCount;
+	int boomLag;
+	float bombPow;
 };
 
 CLASS_DECLARATION( rvWeapon, rvWeaponGrenadeLauncher )
@@ -40,6 +45,9 @@ rvWeaponGrenadeLauncher::rvWeaponGrenadeLauncher
 ================
 */
 rvWeaponGrenadeLauncher::rvWeaponGrenadeLauncher ( void ) {
+	bombCount = 1;
+	boomLag = -5;
+	bombPow = 0.2;
 }
 
 /*
@@ -142,12 +150,30 @@ stateResult_t rvWeaponGrenadeLauncher::State_Fire ( const stateParms_t& parms ) 
 		STAGE_INIT,
 		STAGE_WAIT,
 	};	
+
+
+	int randomGrenadePowerup = rand() % 3 + 1;
+
 	switch ( parms.stage ) {
 		case STAGE_INIT:
 			nextAttackTime = gameLocal.time + (fireRate * owner->PowerUpModifier ( PMOD_FIRERATE ));
-			Attack ( false, 1, spread, -3, 1.0f );//was 0, go lower for explosion lag
-			gameLocal.GetLocalPlayer()->GivePowerUp( POWERUP_HASTE, SEC2MS( 30.0f ) );
-			common->Printf("Testing power up can be called anywhere");
+			Attack ( false, bombCount, spread, boomLag, bombPow );
+			if( randomGrenadePowerup == 1 ) {
+				if( bombCount < 5 ) {
+					bombCount++;
+					spread+=4;
+				}
+				common->Printf("bombCount: %d, spread: %f\n", bombCount, spread);
+			} else if( randomGrenadePowerup == 2 ) {
+				if( boomLag < 1 )
+					boomLag++;
+				common->Printf("boomLag: %d\n", boomLag);
+			} else if( randomGrenadePowerup == 3 ) {
+				if( bombPow < 1.4 )
+					bombPow+=0.2;
+				common->Printf("bombPow: %f\n", bombPow);
+			}
+
 			PlayAnim ( ANIMCHANNEL_ALL, GetFireAnim(), 0 );	
 			return SRESULT_STAGE ( STAGE_WAIT );
 	
