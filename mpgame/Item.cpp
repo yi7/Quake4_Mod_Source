@@ -638,20 +638,20 @@ bool idItem::Pickup( idPlayer *player ) {
 
 	const idDeclEntityDef*	def;
 
-	int randomPowerup = rand() % 3 + 1;
-	if ( gameLocal.GetLocalPlayer()->PowerUpActive( POWERUP_QUADDAMAGE ) || 
-		 gameLocal.GetLocalPlayer()->PowerUpActive( POWERUP_HASTE ) || 
-		 gameLocal.GetLocalPlayer()->PowerUpActive( POWERUP_INVISIBILITY ) ) {
+	if ( player->PowerUpActive( POWERUP_QUADDAMAGE ) || 
+		 player->PowerUpActive( POWERUP_HASTE ) || 
+		 player->PowerUpActive( POWERUP_INVISIBILITY ) ) {
 			 //Do nothing, carry on...
 	} else {
+		int randomPowerup = rand() % 3 + 1;
 		if( randomPowerup == 1 ) {
-			gameLocal.GetLocalPlayer()->GivePowerUp( POWERUP_QUADDAMAGE, SEC2MS( 30.0f ) );
-			common->Printf("Regen powerup\n");
+			player->GivePowerUp( POWERUP_QUADDAMAGE, SEC2MS( 30.0f ) );
+			common->Printf("Damage powerup\n");
 		} else if( randomPowerup == 2 ) {
-			gameLocal.GetLocalPlayer()->GivePowerUp( POWERUP_HASTE, SEC2MS( 30.0f ) );
+			player->GivePowerUp( POWERUP_HASTE, SEC2MS( 30.0f ) );
 			common->Printf("Haste powerup\n");
 		} else if( randomPowerup == 3 ) {
-			gameLocal.GetLocalPlayer()->GivePowerUp( POWERUP_INVISIBILITY, SEC2MS( 30.0f ) );
+			player->GivePowerUp( POWERUP_INVISIBILITY, SEC2MS( 30.0f ) );
 			common->Printf("Invis powerup\n");
 		}
 	}

@@ -433,6 +433,9 @@ private:
 	int						hitscanAttackDef;
 
 	CLASS_STATES_PROTOTYPE ( rvWeapon );
+
+	public:
+		int boomLag;
 };
 
 ID_INLINE rvViewWeapon* rvWeapon::GetViewModel ( void ) const {

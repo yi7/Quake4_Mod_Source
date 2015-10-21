@@ -152,6 +152,10 @@ private:
 	// set from def file in :Launch on both client and server
 	float					launchSpeed;
 	bool					playedDamageEffect;
+
+	public:
+		float poisonDmg;
+
 };
 
 ID_INLINE float idProjectile::GetSpeed ( void ) const {

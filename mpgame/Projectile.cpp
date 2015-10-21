@@ -752,9 +752,13 @@ bool idProjectile::Collide( const trace_t &collision, const idVec3 &velocity, bo
  
 	// get the entity the projectile collided with
 	ent = gameLocal.entities[ collision.c.entityNum ];
+	common->Printf("Test ent name: %s\n", ent->GetClassname());
 	if ( ent == owner.GetEntity() ) {
+		common->Printf("getEntity: %s\n", ent->GetClassname());
+
 		return true;
 	}
+
 
  	// just get rid of the projectile when it hits a player in noclip
  	if ( ent->IsType( idPlayer::GetClassType() ) && static_cast<idPlayer *>( ent )->noclip ) {
@@ -816,6 +820,9 @@ bool idProjectile::Collide( const trace_t &collision, const idVec3 &velocity, bo
 		}
 		// Pass through water
 		return false;
+	} else if( ent->GetPhysics()->GetContents() & CONTENTS_BODY ) { //youken
+		common->Printf("test\n");
+		return false;
 	} else if ( canDamage && ent->IsType( idActor::GetClassType() ) ) {
 		if ( !projectileFlags.detonate_on_actor ) {
 			return false;
@@ -830,7 +837,7 @@ bool idProjectile::Collide( const trace_t &collision, const idVec3 &velocity, bo
 		if ( !bounce && collision.c.material && (collision.c.material->GetSurfaceFlags() & SURF_BOUNCE) ) {
 			bounce = !projectileFlags.detonate_on_bounce;
 		}
-		
+
 		if ( bounce ) {
 			if ( bounceCount != -1 ) {
 				bounceCount--;
@@ -870,6 +877,10 @@ bool idProjectile::Collide( const trace_t &collision, const idVec3 &velocity, bo
 					dir.Normalize();
 					actualHitEnt->Damage( this, owner, dir, damageDefName, damagePower, CLIPMODEL_ID_TO_JOINT_HANDLE( collision.c.id ) );
 				}
+			}
+
+			if( actualHitEnt == gameLocal.GetLocalPlayer() ) {
+				common->Printf("touch");
 			}
 			return false;		
 		}
